@@ -1,35 +1,31 @@
 version: 1.3.16
 cache: true
-
 registration:
-  # Zitadel SSO is the only login method; hide other social provider buttons.
-  socialLogins: ['openid']
-
-# System prompts come from the single master prompt in
-# config/system-prompt.md, applied to every spec at image build by
-# scripts/assemble-librechat-config.mjs.
+  socialLogins:
+    - openid
 modelSpecs:
   prioritize: true
   list:
-    - name: 'elpis-deepseek-flash'
-      label: 'Elpis - DeepSeek V4 Flash'
+    - name: elpis-deepseek-flash
+      label: Elpis - DeepSeek V4 Flash
       default: true
       preset:
-        endpoint: 'DeepSeek'
-        model: 'deepseek-v4-flash'
-    - name: 'elpis-deepseek-pro'
-      label: 'Elpis - DeepSeek V4 Pro'
+        endpoint: DeepSeek
+        model: deepseek-v4-flash
+    - name: elpis-deepseek-pro
+      label: Elpis - DeepSeek V4 Pro
+      default: false
       preset:
-        endpoint: 'DeepSeek'
-        model: 'deepseek-v4-pro'
-    - name: 'elpis-gemini'
-      label: 'Elpis - Gemini'
+        endpoint: DeepSeek
+        model: deepseek-v4-pro
+    - name: elpis-gemini
+      label: Elpis - Gemini
+      default: false
       preset:
-        endpoint: 'google'
-        model: 'gemini-3.8-flash'
-
+        endpoint: google
+        model: gemini-3.8-flash
 interface:
-  customWelcome: 'Welcome to Elpis'
+  customWelcome: Welcome to Elpis
   modelSelect: true
   bookmarks: true
   mcpServers:
@@ -82,28 +78,18 @@ interface:
   feedback: false
   buildInfo: false
   autoSubmitFromUrl: false
-
 endpoints:
   custom:
-    - name: 'DeepSeek'
-      apiKey: '${DEEPSEEK_API_KEY}'
-      baseURL: 'https://api.deepseek.com'
+    - name: DeepSeek
+      apiKey: ${DEEPSEEK_API_KEY}
+      baseURL: https://api.deepseek.com
       models:
         default:
-          - 'deepseek-v4-flash'
-          - 'deepseek-v4-pro'
+          - deepseek-v4-flash
+          - deepseek-v4-pro
         fetch: true
       titleConvo: true
-      titleModel: 'deepseek-v4-flash'
-      modelDisplayLabel: 'DeepSeek'
-
-# Every chat-selectable MCP server is attached to every chat, including
-# servers added later through the admin config override. `chatMenu: false`
-# on a server remains an opt-out.
+      titleModel: deepseek-v4-flash
+      modelDisplayLabel: DeepSeek
 mcpSettings:
-  autoAttachAllServers: true
-
-# MCP servers are managed as a list in Pages CMS (config/mcp-servers.yml) and
-# baked into the `mcpServers` map at image build by
-# scripts/assemble-librechat-config.mjs. Every entry authenticates with the
-# signed-in user's live Zitadel access token.
+  autoAttachAllServers: false
