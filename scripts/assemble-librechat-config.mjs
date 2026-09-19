@@ -24,6 +24,7 @@ const getArg = (flag, fallback) => {
 
 const configPath = path.resolve(getArg('--config', 'librechat.yaml'));
 const serversPath = path.resolve(getArg('--servers', 'config/mcp-servers.yml'));
+const promptPath = path.resolve(getArg('--prompt', 'config/system-prompt.md'));
 const outPath = path.resolve(getArg('--out', 'librechat.yaml'));
 
 const VALID_TYPES = new Set(['streamable-http', 'sse', 'websocket']);
@@ -73,7 +74,34 @@ for (const [index, server] of listed.entries()) {
 }
 
 config.mcpServers = mcpServers;
+
+/**
+ * One master system prompt for every model spec. The prompt file is the single
+ * editable source; a `promptPrefix` left on a spec in the repository is
+ * replaced here rather than merged, so the copies cannot drift.
+ */
+let systemPrompt = '';
+try {
+  systemPrompt = readFileSync(promptPath, 'utf8').trim();
+} catch (error) {
+  if (error.code !== 'ENOENT') {
+    throw error;
+  }
+}
+
+let promptedSpecs = 0;
+if (systemPrompt !== '' && Array.isArray(config.modelSpecs?.list)) {
+  for (const spec of config.modelSpecs.list) {
+    if (spec == null || typeof spec !== 'object' || Array.isArray(spec)) {
+      continue;
+    }
+    spec.preset = { ...(spec.preset ?? {}), promptPrefix: systemPrompt };
+    promptedSpecs += 1;
+  }
+}
+
 writeFileSync(outPath, yaml.dump(config, { lineWidth: -1, noRefs: true }), 'utf8');
 console.log(
-  `[assemble-config] baked ${Object.keys(mcpServers).length} MCP server(s) into ${path.relative(process.cwd(), outPath)}`,
+  `[assemble-config] baked ${Object.keys(mcpServers).length} MCP server(s) and the master prompt ` +
+    `into ${promptedSpecs} model spec(s) -> ${path.relative(process.cwd(), outPath)}`,
 );

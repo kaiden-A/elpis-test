@@ -5,6 +5,9 @@ registration:
   # Zitadel SSO is the only login method; hide other social provider buttons.
   socialLogins: ['openid']
 
+# System prompts come from the single master prompt in
+# config/system-prompt.md, applied to every spec at image build by
+# scripts/assemble-librechat-config.mjs.
 modelSpecs:
   prioritize: true
   list:
@@ -14,31 +17,16 @@ modelSpecs:
       preset:
         endpoint: 'DeepSeek'
         model: 'deepseek-v4-flash'
-        promptPrefix: |
-          You are Elpis, the AI assistant for elysiaa.
-          Be clear, concise and accurate. Reply in the user's language.
-          Use your tools when they help answer the request.
-          If you are unsure, say so instead of guessing.
     - name: 'elpis-deepseek-pro'
       label: 'Elpis - DeepSeek V4 Pro'
       preset:
         endpoint: 'DeepSeek'
         model: 'deepseek-v4-pro'
-        promptPrefix: |
-          You are Elpis, the AI assistant for elysiaa.
-          Be clear, concise and accurate. Reply in the user's language.
-          Use your tools when they help answer the request.
-          If you are unsure, say so instead of guessing.
     - name: 'elpis-gemini'
       label: 'Elpis - Gemini'
       preset:
         endpoint: 'google'
         model: 'gemini-3.8-flash'
-        promptPrefix: |
-          You are Elpis, the AI assistant for elysiaa.
-          Be clear, concise and accurate. Reply in the user's language.
-          Use your tools when they help answer the request.
-          If you are unsure, say so instead of guessing.
 
 interface:
   customWelcome: 'Welcome to Elpis'

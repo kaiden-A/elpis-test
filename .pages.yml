@@ -24,7 +24,7 @@ content:
             label: Always attach every MCP server
             type: boolean
       - name: modelSpecs
-        label: Model specs & system prompts
+        label: Model specs
         type: object
         fields:
           - name: prioritize
@@ -56,9 +56,14 @@ content:
                         - google
                   - name: model
                     type: string
-                  - name: promptPrefix
-                    label: System prompt
-                    type: text
+
+  - name: system-prompt
+    label: Master system prompt
+    type: file
+    path: config/system-prompt.md
+    format: code
+    options:
+      language: markdown
 
   - name: mcp-servers
     label: MCP servers
