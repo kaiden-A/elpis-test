@@ -200,6 +200,32 @@ export function useMCPSelect({
     [setMCPValuesRaw, setEphemeralAgent, storageContextKey],
   );
 
+  /**
+   * `mcpSettings.autoAttachAllServers` attaches the whole chat-selectable
+   * catalog server-side; mirror it into the picker so the visible selection
+   * matches the tools the request actually carries. Re-runs on catalog changes
+   * so servers added later join without user action, and a removed server is
+   * left to the pruning above rather than kept alive here.
+   */
+  useEffect(() => {
+    if (!ownsChatSelection || servers.length === 0) {
+      return;
+    }
+    if (startupConfig?.mcpSettings?.autoAttachAllServers !== true) {
+      return;
+    }
+    const next = [...new Set([...mcpValues, ...servers.map((server) => server.serverName)])];
+    if (!isEqual(next, mcpValues)) {
+      setMCPValues(next);
+    }
+  }, [
+    ownsChatSelection,
+    startupConfig?.mcpSettings?.autoAttachAllServers,
+    servers,
+    mcpValues,
+    setMCPValues,
+  ]);
+
   return {
     isPinned,
     mcpValues,

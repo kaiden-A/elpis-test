@@ -588,6 +588,42 @@ export async function filterChatSelectableMCPServers(
 }
 
 /**
+ * Every chat-selectable server the given user can reach, for deployments that
+ * attach the whole catalog to each chat (`mcpSettings.autoAttachAllServers`).
+ *
+ * Shares `filterChatSelectableMCPServers`'s resolution so the auto-attached set
+ * and the picker's catalog cannot disagree. A failed lookup attaches nothing
+ * rather than guessing, keeping the failure to a missing tool surface instead
+ * of an unexpected server.
+ */
+export async function getAutoAttachableMCPServers({
+  userId,
+  role,
+  getAccessibleMCPServers,
+}: {
+  userId: string;
+  role?: string;
+  getAccessibleMCPServers?: (
+    userId: string,
+    role?: string,
+  ) => Promise<Record<string, Pick<ParsedServerConfig, 'chatMenu' | 'consumeOnly'>>>;
+}): Promise<string[]> {
+  if (getAccessibleMCPServers == null) {
+    return [];
+  }
+
+  try {
+    const accessible = await getAccessibleMCPServers(userId, role);
+    return Object.entries(accessible ?? {})
+      .filter(([, config]) => isChatSelectableMCPServer(config))
+      .map(([serverName]) => serverName);
+  } catch (error) {
+    logger.warn('[MCP] Could not resolve accessible servers for auto-attach', error);
+    return [];
+  }
+}
+
+/**
  * Returns true when a server requires a per-user connection instead of an
  * app-shared connection.
  */

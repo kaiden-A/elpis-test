@@ -1,0 +1,57 @@
+settings:
+  content:
+    merge: true
+
+content:
+  - name: elpis-config
+    label: Elpis
+    type: file
+    path: librechat.yaml
+    format: yaml
+    fields:
+      - name: interface
+        label: Interface
+        type: object
+        fields:
+          - name: customWelcome
+            label: Welcome text
+            type: string
+      - name: mcpSettings
+        label: MCP
+        type: object
+        fields:
+          - name: autoAttachAllServers
+            label: Always attach every MCP server
+            type: boolean
+      - name: modelSpecs
+        label: Model specs & system prompts
+        type: object
+        fields:
+          - name: prioritize
+            type: boolean
+          - name: list
+            label: Specs
+            type: list
+            fields:
+              - name: name
+                type: string
+                required: true
+              - name: label
+                type: string
+              - name: default
+                type: boolean
+              - name: preset
+                label: Preset
+                type: object
+                fields:
+                  - name: endpoint
+                    type: select
+                    options:
+                      values:
+                        - DeepSeek
+                        - google
+                  - name: model
+                    type: string
+                  - name: promptPrefix
+                    label: System prompt
+                    type: text

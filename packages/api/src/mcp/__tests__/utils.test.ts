@@ -27,6 +27,7 @@ import {
   requiresOAuthMachinery,
   isChatSelectableMCPServer,
   filterChatSelectableMCPServers,
+  getAutoAttachableMCPServers,
   waitUntilDeadline,
 } from '~/mcp/utils';
 import { usesDirectOpenIDBearerRecovery } from '~/mcp/openid';
@@ -1516,6 +1517,47 @@ describe('filterChatSelectableMCPServers', () => {
     await expect(filterChatSelectableMCPServers([], opts)).resolves.toEqual([]);
     await expect(filterChatSelectableMCPServers(undefined, opts)).resolves.toEqual([]);
     await expect(filterChatSelectableMCPServers(null, opts)).resolves.toEqual([]);
+  });
+});
+
+describe('getAutoAttachableMCPServers', () => {
+  const catalog = {
+    visible: { chatMenu: true },
+    hidden: { chatMenu: false },
+    unset: {},
+    'agent-only': { consumeOnly: true },
+  };
+
+  it('returns every chat-selectable server in the catalog', async () => {
+    await expect(
+      getAutoAttachableMCPServers({
+        userId: 'user123',
+        getAccessibleMCPServers: jest.fn(async () => catalog),
+      }),
+    ).resolves.toEqual(['visible', 'unset']);
+  });
+
+  it('passes the role through, since it scopes what the user can reach', async () => {
+    const accessible = jest.fn(async () => catalog);
+    await getAutoAttachableMCPServers({
+      userId: 'user123',
+      role: 'ADMIN',
+      getAccessibleMCPServers: accessible,
+    });
+    expect(accessible).toHaveBeenCalledWith('user123', 'ADMIN');
+  });
+
+  it('attaches nothing when no resolver is supplied', async () => {
+    await expect(getAutoAttachableMCPServers({ userId: 'user123' })).resolves.toEqual([]);
+  });
+
+  it('attaches nothing when the catalog lookup fails', async () => {
+    const failing = jest.fn(async () => {
+      throw new Error('registry unavailable');
+    });
+    await expect(
+      getAutoAttachableMCPServers({ userId: 'user123', getAccessibleMCPServers: failing }),
+    ).resolves.toEqual([]);
   });
 });
 

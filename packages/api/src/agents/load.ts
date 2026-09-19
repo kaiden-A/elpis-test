@@ -18,6 +18,7 @@ import type { AppConfig } from '@librechat/data-schemas';
 import type { ParsedServerConfig } from '~/mcp/types';
 import {
   requiresEphemeralUserConnection,
+  getAutoAttachableMCPServers,
   filterChatSelectableMCPServers,
   validateMCPServerConfig,
 } from '~/mcp/utils';
@@ -88,6 +89,17 @@ export async function loadEphemeralAgent(
   );
   if (modelSpec?.mcpServers) {
     for (const mcpServer of modelSpec.mcpServers) {
+      mcpServers.add(mcpServer);
+    }
+  }
+  /** `mcpSettings.autoAttachAllServers` attaches the whole chat-selectable
+   *  catalog; a failed resolver attaches nothing rather than failing the chat. */
+  if (req.config?.mcpSettings?.autoAttachAllServers === true) {
+    for (const mcpServer of await getAutoAttachableMCPServers({
+      userId,
+      role: req.user?.role,
+      getAccessibleMCPServers: deps.getAccessibleMCPServers,
+    })) {
       mcpServers.add(mcpServer);
     }
   }

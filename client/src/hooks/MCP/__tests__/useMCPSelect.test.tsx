@@ -16,9 +16,11 @@ jest.mock('~/utils/timestamps', () => ({
 jest.mock('lodash/isEqual', () => jest.fn((a, b) => JSON.stringify(a) === JSON.stringify(b)));
 
 // Mutable startup config so tests can vary `interface.defaultPinnedTools`
+// and `mcpSettings.autoAttachAllServers`
 let mockStartupConfig:
   | {
       interface?: { defaultPinnedTools?: string[] };
+      mcpSettings?: { autoAttachAllServers?: boolean };
       modelSpecs?: { list?: Array<{ name: string; mcpServers?: string[] }> };
     }
   | undefined;
@@ -1184,6 +1186,64 @@ describe('useMCPSelect', () => {
 
       await waitFor(() => {
         expect(result.current.isPinned).toBe(false);
+      });
+    });
+  });
+
+  describe('mcpSettings.autoAttachAllServers (admin-configured always-on MCP)', () => {
+    it('selects every catalog server when the setting is on', async () => {
+      mockStartupConfig = { mcpSettings: { autoAttachAllServers: true } };
+      const { Wrapper, servers } = createWrapper(['serverA', 'serverB']);
+      const { result } = renderHook(() => useMCPSelect({ servers, ownsChatSelection: true }), {
+        wrapper: Wrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.current.mcpValues).toEqual(['serverA', 'serverB']);
+      });
+    });
+
+    it('merges the catalog back into an existing selection', async () => {
+      mockStartupConfig = { mcpSettings: { autoAttachAllServers: true } };
+      const { Wrapper, servers } = createWrapper(['serverA', 'serverB']);
+      const { result } = renderHook(() => useMCPSelect({ servers, ownsChatSelection: true }), {
+        wrapper: Wrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.current.mcpValues).toEqual(['serverA', 'serverB']);
+      });
+
+      act(() => {
+        result.current.setMCPValues(['serverA']);
+      });
+
+      await waitFor(() => {
+        expect(result.current.mcpValues).toEqual(['serverA', 'serverB']);
+      });
+    });
+
+    it('leaves the selection to the user when the setting is off', async () => {
+      mockStartupConfig = { mcpSettings: {} };
+      const { Wrapper, servers } = createWrapper(['serverA']);
+      const { result } = renderHook(() => useMCPSelect({ servers, ownsChatSelection: true }), {
+        wrapper: Wrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.current.mcpValues).toEqual([]);
+      });
+    });
+
+    it('does not write the selection from a non-owner instance', async () => {
+      mockStartupConfig = { mcpSettings: { autoAttachAllServers: true } };
+      const { Wrapper, servers } = createWrapper(['serverA']);
+      const { result } = renderHook(() => useMCPSelect({ servers, ownsChatSelection: false }), {
+        wrapper: Wrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.current.mcpValues).toEqual([]);
       });
     });
   });

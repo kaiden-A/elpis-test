@@ -310,6 +310,40 @@ describe('loadAgent', () => {
        *  pick is gone, the spec's pin stays. */
       expect(body.ephemeralAgent.mcp).toEqual(['visible', 'hidden']);
     });
+
+    test('attaches every chat-selectable server when auto-attach is enabled', async () => {
+      const body = { ephemeralAgent: { mcp: [] as string[] } };
+
+      const result = await loadEphemeral(
+        { mcpConfig: {}, mcpSettings: { autoAttachAllServers: true } },
+        body,
+      );
+
+      expect(selectedServerNames()).toEqual(['visible']);
+      expect(result?.tools).toContain('tool_mcp_visible');
+      expect(result?.tools).not.toContain('tool_mcp_hidden');
+      expect(body.ephemeralAgent.mcp).toEqual(['visible']);
+    });
+
+    test('keeps the computed selection when auto-attach is off', async () => {
+      const result = await loadEphemeral(
+        { mcpConfig: {}, mcpSettings: { autoAttachAllServers: false } },
+        { ephemeralAgent: { mcp: [] } },
+      );
+
+      expect(selectedServerNames()).toEqual([]);
+      expect(result?.tools ?? []).not.toContain('tool_mcp_visible');
+    });
+
+    test('auto-attach honors server-level opt-outs', async () => {
+      await loadEphemeral(
+        { mcpConfig: {}, mcpSettings: { autoAttachAllServers: true } },
+        { ephemeralAgent: { mcp: [] } },
+      );
+
+      expect(selectedServerNames()).not.toContain('hidden');
+      expect(selectedServerNames()).not.toContain('agent-only');
+    });
   });
 
   test('addresses cached tools with a non-ephemeral request overlay', async () => {

@@ -2357,6 +2357,11 @@ export type TStartupConfig = {
     }
   >;
   mcpPlaceholder?: string;
+  /** Server-side MCP behavior flags the client mirrors in its picker. */
+  mcpSettings?: {
+    /** Every chat-selectable MCP server is attached to every chat. */
+    autoAttachAllServers?: boolean;
+  };
   conversationImportMaxFileSize?: number;
   buildInfo?: {
     commit?: string | null;
@@ -2880,6 +2885,10 @@ export const configSchema = z.object({
     .object({
       allowedDomains: z.array(z.string()).optional(),
       allowedAddresses: allowedAddressesSchema,
+      /** Attach every chat-selectable MCP server to every chat, including
+       *  servers added after this setting was enabled. `chatMenu: false`
+       *  and `consumeOnly` remain per-server opt-outs. */
+      autoAttachAllServers: z.boolean().optional(),
       catalogRecovery: z
         .object({
           discoveryBackoffMs: z

@@ -1126,6 +1126,23 @@ describe('configSchema fileStrategy', () => {
   });
 });
 
+describe('configSchema mcpSettings', () => {
+  it('accepts autoAttachAllServers', () => {
+    const result = configSchema.safeParse({
+      version: '1.3.16',
+      mcpSettings: { autoAttachAllServers: true },
+    });
+    expect(result.success).toBe(true);
+    expect(result.data?.mcpSettings?.autoAttachAllServers).toBe(true);
+  });
+
+  it('leaves autoAttachAllServers undefined when not provided', () => {
+    const result = configSchema.safeParse({ version: '1.3.16' });
+    expect(result.success).toBe(true);
+    expect(result.data?.mcpSettings?.autoAttachAllServers).toBeUndefined();
+  });
+});
+
 describe('configSchema skillSync', () => {
   it('accepts a GitHub skill sync source with explicit paths and credential key', () => {
     const result = configSchema.safeParse({

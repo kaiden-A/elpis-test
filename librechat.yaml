@@ -5,6 +5,41 @@ registration:
   # Zitadel SSO is the only login method; hide other social provider buttons.
   socialLogins: ['openid']
 
+modelSpecs:
+  prioritize: true
+  list:
+    - name: 'elpis-deepseek-flash'
+      label: 'Elpis - DeepSeek V4 Flash'
+      default: true
+      preset:
+        endpoint: 'DeepSeek'
+        model: 'deepseek-v4-flash'
+        promptPrefix: |
+          You are Elpis, the AI assistant for elysiaa.
+          Be clear, concise and accurate. Reply in the user's language.
+          Use your tools when they help answer the request.
+          If you are unsure, say so instead of guessing.
+    - name: 'elpis-deepseek-pro'
+      label: 'Elpis - DeepSeek V4 Pro'
+      preset:
+        endpoint: 'DeepSeek'
+        model: 'deepseek-v4-pro'
+        promptPrefix: |
+          You are Elpis, the AI assistant for elysiaa.
+          Be clear, concise and accurate. Reply in the user's language.
+          Use your tools when they help answer the request.
+          If you are unsure, say so instead of guessing.
+    - name: 'elpis-gemini'
+      label: 'Elpis - Gemini'
+      preset:
+        endpoint: 'google'
+        model: 'gemini-3.8-flash'
+        promptPrefix: |
+          You are Elpis, the AI assistant for elysiaa.
+          Be clear, concise and accurate. Reply in the user's language.
+          Use your tools when they help answer the request.
+          If you are unsure, say so instead of guessing.
+
 interface:
   customWelcome: 'Welcome to Elpis'
   modelSelect: true
@@ -73,6 +108,12 @@ endpoints:
       titleConvo: true
       titleModel: 'deepseek-v4-flash'
       modelDisplayLabel: 'DeepSeek'
+
+# Every chat-selectable MCP server is attached to every chat, including
+# servers added later through the admin config override. `chatMenu: false`
+# on a server remains an opt-out.
+mcpSettings:
+  autoAttachAllServers: true
 
 # MCP servers (admin-managed; users cannot create their own).
 # The bearer is the signed-in user's live Zitadel access token; an explicit
