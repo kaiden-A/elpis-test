@@ -31,7 +31,11 @@ content:
             type: boolean
           - name: list
             label: Specs
-            type: list
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: '{name} ({index})'
             fields:
               - name: name
                 type: string
