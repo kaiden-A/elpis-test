@@ -1,5 +1,65 @@
 version: 1.3.16
 cache: true
+
+registration:
+  # Zitadel SSO is the only login method; hide other social provider buttons.
+  socialLogins: ['openid']
+
+interface:
+  customWelcome: 'Welcome to Elpis'
+  modelSelect: true
+  bookmarks: true
+  mcpServers:
+    use: true
+    create: false
+    share: false
+    public: false
+  parameters: false
+  presets: false
+  multiConvo: false
+  memories: false
+  prompts:
+    use: false
+    create: false
+    share: false
+    public: false
+  agents:
+    use: false
+    create: false
+    share: false
+    public: false
+  temporaryChat: false
+  runCode: false
+  webSearch: false
+  fileSearch: false
+  fileCitations: false
+  peoplePicker:
+    users: false
+    groups: false
+    roles: false
+  marketplace:
+    use: false
+  remoteAgents:
+    use: false
+    create: false
+    share: false
+    public: false
+  skills:
+    use: false
+    create: false
+    share: false
+    public: false
+  sharedLinks:
+    create: false
+    share: false
+    public: false
+  schedules: false
+  contextUsage: false
+  contextCost: false
+  feedback: false
+  buildInfo: false
+  autoSubmitFromUrl: false
+
 endpoints:
   custom:
     - name: 'DeepSeek'
@@ -13,3 +73,17 @@ endpoints:
       titleConvo: true
       titleModel: 'deepseek-v4-flash'
       modelDisplayLabel: 'DeepSeek'
+
+# MCP servers (admin-managed; users cannot create their own).
+# The bearer is the signed-in user's live Zitadel access token; an explicit
+# apiKey/oauth/obo block on the same server disables this passthrough.
+# mcpServers:
+#   elpis-tools:
+#     type: streamable-http
+#     url: https://<mcp-host>/mcp
+#     headers:
+#       Authorization: "Bearer {{LIBRECHAT_OPENID_ACCESS_TOKEN}}"
+# mcpSettings:
+#   # Required only when the MCP host is a private/loopback address.
+#   allowedDomains:
+#     - '<mcp-host>'
