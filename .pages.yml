@@ -59,3 +59,26 @@ content:
                   - name: promptPrefix
                     label: System prompt
                     type: text
+
+  - name: mcp-servers
+    label: MCP servers
+    type: file
+    path: config/mcp-servers.yml
+    format: yaml
+    list: true
+    fields:
+      - name: name
+        label: Name
+        type: string
+        required: true
+      - name: url
+        label: Endpoint URL
+        type: string
+        required: true
+      - name: type
+        label: Transport
+        type: select
+        options:
+          values:
+            - streamable-http
+            - sse

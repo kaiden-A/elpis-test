@@ -115,12 +115,7 @@ endpoints:
 mcpSettings:
   autoAttachAllServers: true
 
-# MCP servers (admin-managed; users cannot create their own).
-# The bearer is the signed-in user's live Zitadel access token; an explicit
-# apiKey/oauth/obo block on the same server disables this passthrough.
-mcpServers:
-  solace-api:
-    type: streamable-http
-    url: https://solace-api.elysiaa.com/mcp
-    headers:
-      Authorization: "Bearer {{LIBRECHAT_OPENID_ACCESS_TOKEN}}"
+# MCP servers are managed as a list in Pages CMS (config/mcp-servers.yml) and
+# baked into the `mcpServers` map at image build by
+# scripts/assemble-librechat-config.mjs. Every entry authenticates with the
+# signed-in user's live Zitadel access token.

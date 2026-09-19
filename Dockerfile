@@ -62,6 +62,10 @@ RUN \
     npm prune --production; \
     npm cache clean --force
 
+# Bake the Pages CMS-managed MCP server list into librechat.yaml so every
+# entry is served to every chat with the user's Zitadel access token.
+RUN node scripts/assemble-librechat-config.mjs
+
 # Optional build metadata surfaced in Settings -> About for support triage.
 # Declared here (after the heavy install/build steps) so that commit/date
 # changing on every CI run does not bust the cache for dependency install
