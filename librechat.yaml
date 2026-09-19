@@ -77,13 +77,9 @@ endpoints:
 # MCP servers (admin-managed; users cannot create their own).
 # The bearer is the signed-in user's live Zitadel access token; an explicit
 # apiKey/oauth/obo block on the same server disables this passthrough.
-# mcpServers:
-#   elpis-tools:
-#     type: streamable-http
-#     url: https://<mcp-host>/mcp
-#     headers:
-#       Authorization: "Bearer {{LIBRECHAT_OPENID_ACCESS_TOKEN}}"
-# mcpSettings:
-#   # Required only when the MCP host is a private/loopback address.
-#   allowedDomains:
-#     - '<mcp-host>'
+mcpServers:
+  solace-api:
+    type: streamable-http
+    url: https://solace-api.elysiaa.com/mcp
+    headers:
+      Authorization: "Bearer {{LIBRECHAT_OPENID_ACCESS_TOKEN}}"
