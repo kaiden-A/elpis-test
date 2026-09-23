@@ -1,10 +1,6 @@
-# MCP servers served to every chat.
-#
-# Managed as a list in Pages CMS ("MCP servers" page) and baked into the
-# name-keyed `mcpServers` map at image build by
-# scripts/assemble-librechat-config.mjs. Every entry authenticates with the
-# signed-in user's live Zitadel access token; explicit apiKey/oauth/obo blocks
-# are intentionally not supported here.
-- name: solace-api
+- name: solace-mcp
   url: https://solace-api.elysiaa.com/mcp
+  type: streamable-http
+- name: neoma-mcp
+  url: https://neoma-api.web.app/mcp
   type: streamable-http
