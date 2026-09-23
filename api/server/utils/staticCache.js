@@ -9,6 +9,25 @@ const maxAge = process.env.STATIC_CACHE_MAX_AGE || oneDayInSeconds * 2;
 const isEnabled = (value) => value === true || String(value).toLowerCase() === 'true';
 
 /**
+ * Stable filenames whose bytes change between deploys. `max-age` would pin the old
+ * copy in browsers, the CDN and installed PWAs, so the brand mark could not follow a
+ * rebrand; these revalidate instead.
+ */
+const revalidatedFiles = new Set([
+  'index.html',
+  'manifest.json',
+  'sw.js',
+  'sw-heal.js',
+  'favicon-16x16.png',
+  'favicon-32x32.png',
+  'apple-touch-icon-180x180.png',
+  'icon-192x192.png',
+  'maskable-icon.png',
+  'logo.png',
+  'logo.svg',
+]);
+
+/**
  * Creates an Express static middleware with optional precompressed asset serving and configurable caching
  *
  * @param {string} staticPath - The file system path to serve static files from
@@ -34,18 +53,13 @@ function staticCache(staticPath, options = {}) {
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
       return;
     }
-    if (filePath && filePath.includes('/dist/images/')) {
+    const normalizedPath = filePath ? filePath.split(path.sep).join('/') : '';
+    if (normalizedPath.includes('/dist/images/')) {
       return;
     }
     const fileName = filePath ? path.basename(filePath) : '';
 
-    if (
-      fileName === 'index.html' ||
-      fileName.endsWith('.webmanifest') ||
-      fileName === 'manifest.json' ||
-      fileName === 'sw.js' ||
-      fileName === 'sw-heal.js'
-    ) {
+    if (fileName.endsWith('.webmanifest') || revalidatedFiles.has(fileName)) {
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     } else {
       res.setHeader('Cache-Control', `public, max-age=${maxAge}, s-maxage=${sMaxAge}`);

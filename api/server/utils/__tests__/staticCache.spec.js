@@ -117,6 +117,26 @@ describe('staticCache', () => {
       expect(response.headers['cache-control']).toBe('no-store, no-cache, must-revalidate');
     });
 
+    it.each([
+      'favicon-16x16.png',
+      'favicon-32x32.png',
+      'apple-touch-icon-180x180.png',
+      'icon-192x192.png',
+      'maskable-icon.png',
+      'logo.png',
+      'logo.svg',
+    ])('should revalidate %s so a rebrand is not pinned by max-age', async (brandAsset) => {
+      fs.writeFileSync(path.join(testDir, brandAsset), 'brand-asset');
+
+      app.use(staticCache(testDir));
+
+      const response = await request(app).get(`/${brandAsset}`).expect(200);
+
+      expect(response.headers['cache-control']).toBe('no-store, no-cache, must-revalidate');
+
+      fs.unlinkSync(path.join(testDir, brandAsset));
+    });
+
     it('should not set cache headers for /dist/images/ files', async () => {
       app.use(staticCache(testDir));
 
