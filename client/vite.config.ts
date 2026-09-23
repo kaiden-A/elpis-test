@@ -155,7 +155,7 @@ export default defineConfig(({ command }) => ({
         short_name: 'Elpis',
         display: 'standalone',
         background_color: '#000000',
-        theme_color: '#009688',
+        theme_color: '#78B048',
         icons: [
           {
             src: 'assets/favicon-32x32.png',
