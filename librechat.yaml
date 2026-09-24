@@ -12,18 +12,12 @@ modelSpecs:
       preset:
         endpoint: DeepSeek
         model: deepseek-v4-flash
-    - name: elpis-deepseek-pro
-      label: Elpis - DeepSeek V4 Pro
-      default: false
-      preset:
-        endpoint: DeepSeek
-        model: deepseek-v4-pro
-    - name: elpis-gemini
-      label: Elpis - Gemini
+    - name: elpis-gemini-3.5-flash
+      label: elpis-gemini-3.5-flash
       default: false
       preset:
         endpoint: google
-        model: gemini-3.8-flash
+        model: gemini-3.5-flash
 interface:
   customWelcome: Welcome to Elpis
   modelSelect: true
