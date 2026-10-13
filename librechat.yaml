@@ -9,18 +9,24 @@ modelSpecs:
     - name: elpis-deepseek-flash
       label: Elpis - DeepSeek V4 Flash
       default: true
+      mcpServers:
+        - gform
       preset:
         endpoint: DeepSeek
         model: deepseek-v4-flash
     - name: elpis-deepseek-pro
       label: Elpis - DeepSeek V4 Pro
       default: false
+      mcpServers:
+        - gform
       preset:
         endpoint: DeepSeek
         model: deepseek-v4-pro
     - name: elpis-gemini
       label: Elpis - Gemini
       default: false
+      mcpServers:
+        - gform
       preset:
         endpoint: google
         model: gemini-3.8-flash

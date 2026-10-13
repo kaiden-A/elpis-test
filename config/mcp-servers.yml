@@ -4,3 +4,6 @@
 - name: neoma-mcp
   url: https://neoma-api.web.app/mcp
   type: streamable-http
+- name: gform
+  url: https://gform-api.web.app/mcp
+  type: streamable-http
