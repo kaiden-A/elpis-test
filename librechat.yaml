@@ -24,12 +24,13 @@ modelSpecs:
         model: deepseek-v4-pro
     - name: elpis-gemini
       label: Elpis - Gemini
+
       default: false
       mcpServers:
         - gform
       preset:
         endpoint: google
-        model: gemini-3.8-flash
+        model: gemini-3.5-flash
 interface:
   customWelcome: Welcome to Elpis
   modelSelect: true
